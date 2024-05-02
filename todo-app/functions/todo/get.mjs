@@ -1,4 +1,5 @@
 import { db } from "../../utils/db.mjs";
+import { sendResponse } from "../../utils/response.mjs";
 
 export const handler = async (event) => {
   const { id } = event.pathParameters;
@@ -11,8 +12,5 @@ export const handler = async (event) => {
     },
   });
 
-  return {
-    statusCode: 200,
-    body: JSON.stringify(data.Item),
-  };
+  return sendResponse(200, data.Item);
 };

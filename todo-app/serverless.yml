@@ -4,6 +4,7 @@ frameworkVersion: "3"
 provider:
   name: aws
   runtime: nodejs20.x
+  platform: arm64
   region: eu-north-1
   stage: dev
   profile: serverless-user
@@ -14,9 +15,22 @@ functions:
     description: Returns single todo
     handler: functions/todo/get.handler
     role: arn:aws:iam::649210169554:role/lambdaNinja
+    memorySize: 128
     events:
       - httpApi:
           path: /todos/{id}
+          method: get
+  listTodos:
+    name: list-todos-${sls:stage}
+    description: Returns all todos
+    handler: functions/todo/list.handler
+    role: arn:aws:iam::649210169554:role/lambdaNinja
+    memorySize: 512
+    environment:
+      TODOS_TABLE: todos
+    events:
+      - httpApi:
+          path: /todos
           method: get
 
 resources:
