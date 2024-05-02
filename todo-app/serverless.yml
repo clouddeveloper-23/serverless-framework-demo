@@ -1,0 +1,38 @@
+service: todo-app
+frameworkVersion: "3"
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  region: eu-north-1
+  stage: dev
+  profile: serverless-user
+
+functions:
+  getTodo:
+    name: get-todo-${sls:stage}
+    description: Returns single todo
+    handler: functions/todo/get.handler
+    role: arn:aws:iam::649210169554:role/lambdaNinja
+    events:
+      - httpApi:
+          path: /todos/{id}
+          method: get
+
+resources:
+  Resources:
+    todos:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: todos
+        AttributeDefinitions:
+          - AttributeName: pk
+            AttributeType: S
+          - AttributeName: sk
+            AttributeType: S
+        KeySchema:
+          - AttributeName: pk
+            KeyType: HASH
+          - AttributeName: sk
+            KeyType: RANGE
+        BillingMode: "PAY_PER_REQUEST"
